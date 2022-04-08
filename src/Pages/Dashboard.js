@@ -12,7 +12,7 @@ class Dashboard extends React.Component {
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div>
                             <InputGroup style={{ width: "200%" }} size="sm">
-                                <Input placeholder="Search..." />
+                                <Input placeholder="SEARCH..." />
                                 <InputGroupText>
                                     <i className="fa fa-search"></i>
                                 </InputGroupText>

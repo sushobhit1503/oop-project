@@ -23,7 +23,7 @@ class BookDisplayCard extends React.Component {
                                 </div>
                             </div>
                             <div>
-                                <i className="fa fa-bookmark" style={{ fontSize: "30px" }}></i>
+                                <i className="far fa-bookmark" style={{ fontSize: "30px" }}></i>
                             </div>
                         </div>
                         <div style={{ display: "flex", justifyContent: "center" }}>

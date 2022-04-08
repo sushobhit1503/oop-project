@@ -5,6 +5,9 @@ import { Route, Routes } from "react-router-dom"
 import Home from './Pages/Home';
 import MyProfile from './Pages/MyProfile';
 import Dashboard from './Pages/Dashboard';
+import Wallet from './Pages/Wallet';
+import SavedBooks from './Pages/SavedBooks';
+import Requests from './Pages/Requests';
 
 class App extends React.Component {
   render() {
@@ -15,6 +18,9 @@ class App extends React.Component {
           <Route path="/" exact element={<Home />} />
           <Route path="/my-profile" exact element={<MyProfile />} />
           <Route path="/dashboard" exact element={<Dashboard />} />
+          <Route path="/wallet" exact element={<Wallet />} />
+          <Route path="/saved-books" exact element={<SavedBooks />} />
+          <Route path="/requests" exact element={<Requests />} />
         </Routes>
       </div>
     );
