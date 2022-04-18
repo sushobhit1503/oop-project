@@ -1,9 +1,21 @@
 import React from "react"
 import SideBar from "../Components/SideBar"
+import axios from "axios"
 import { InputGroup, InputGroupText, Input, Button } from "reactstrap"
 import BookDisplayCard from "../Components/BookDisplayCard"
 
 class Dashboard extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            allData: []
+        }
+    }
+    componentDidMount() {
+        axios.get("http://localhost:8000/api/book").then(data => {
+            this.setState({ allData: data.data })
+        }).catch(err => console.log(err.message))
+    }
     render() {
         return (
             <div>
@@ -27,13 +39,11 @@ class Dashboard extends React.Component {
                         </div>
                     </div>
                     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", padding: "10px", marginTop: "10px", overflowX: "hidden", overflow: "scroll", backgroundColor: "rgba(255, 255, 255, 1)", borderRadius: "10px", width: "100%", height: "100%" }}>
-                        <BookDisplayCard name="NAME OF THE BOOK" author="Chetan Bhagat" publisher="McGraw Hill" listed="Raj Kumar" />
-                        <BookDisplayCard name="NAME OF THE BOOK" author="Chetan Bhagat" publisher="McGraw Hill" listed="Raj Kumar" />
-                        <BookDisplayCard name="NAME OF THE BOOK" author="Chetan Bhagat" publisher="McGraw Hill" listed="Raj Kumar" />
-                        <BookDisplayCard name="NAME OF THE BOOK" author="Chetan Bhagat" publisher="McGraw Hill" listed="Raj Kumar" />
-                        <BookDisplayCard name="NAME OF THE BOOK" author="Chetan Bhagat" publisher="McGraw Hill" listed="Raj Kumar" />
-                        <BookDisplayCard name="NAME OF THE BOOK" author="Chetan Bhagat" publisher="McGraw Hill" listed="Raj Kumar" />
-                        <BookDisplayCard name="NAME OF THE BOOK" author="Chetan Bhagat" publisher="McGraw Hill" listed="Raj Kumar" />
+                        {this.state.allData.map(each => {
+                            return (
+                                <BookDisplayCard name={each.title} author={each.author_name} publisher={each.publisher} listed={each.name} />
+                            )
+                        })}
                     </div>
                 </div>
             </div>
