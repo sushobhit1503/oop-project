@@ -1,14 +1,20 @@
 import React from "react"
 import SideBar from "../Components/SideBar"
 import axios from "axios"
-import { InputGroup, InputGroupText, Input, Button } from "reactstrap"
+import { InputGroup, InputGroupText, Input, Button, Modal, ModalBody, ModalHeader, ModalFooter } from "reactstrap"
 import BookDisplayCard from "../Components/BookDisplayCard"
 
 class Dashboard extends React.Component {
     constructor() {
         super()
         this.state = {
-            allData: []
+            allData: [],
+            isModalOpen: false,
+            title: "",
+            edition: "",
+            author_name: "",
+            publisher: "",
+            year: ""
         }
     }
     componentDidMount() {
@@ -17,6 +23,25 @@ class Dashboard extends React.Component {
         }).catch(err => console.log(err.message))
     }
     render() {
+        const onChange = (event) => {
+            const { name, value } = event.target
+            this.setState({ [name]: value })
+        }
+        const addBook = () => {
+            this.setState({ isModalOpen: false })
+            const user_id = JSON.parse(localStorage.getItem("userDetails")).uid
+            const data = {
+                title: this.state.title,
+                author_name: this.state.author_name,
+                edition: this.state.edition,
+                year: this.state.year,
+                publisher: this.state.publisher,
+                posted_student_uid: user_id
+            }
+            axios.post("http://localhost:8000/api/book", data).then(data => {
+                console.log(data.data);
+            }).catch((err) => console.log(err.message))
+        }
         return (
             <div>
                 <SideBar />
@@ -32,7 +57,7 @@ class Dashboard extends React.Component {
                             {/* <i className="fa fa-sort"></i> */}
                         </div>
                         <div>
-                            <Button size="sm" style={{ marginLeft: "550px" }}>
+                            <Button onClick={() => this.setState({ isModalOpen: true })} size="sm" style={{ marginLeft: "550px" }}>
                                 <i className="fa fa-plus" style={{ marginRight: "10px" }}></i>
                                 LEND NEW BOOK
                             </Button>
@@ -46,6 +71,23 @@ class Dashboard extends React.Component {
                         })}
                     </div>
                 </div>
+                <Modal isOpen={this.state.isModalOpen} toggle={() => this.setState({ isModalOpen: !this.state.isModalOpen })} >
+                    <ModalHeader toggle={() => this.setState({ isModalOpen: !this.state.isModalOpen })}>
+                        LEND NEW BOOK
+                    </ModalHeader>
+                    <ModalBody>
+                        <Input onChange={onChange} name="title" value={this.state.title} style={{ marginBottom: "10px" }} bsSize="sm" placeholder="TITLE" type="text" />
+                        <Input onChange={onChange} name="author_name" value={this.state.author_name} style={{ marginBottom: "10px" }} bsSize="sm" placeholder="AUTHOR NAME" type="text" />
+                        <Input onChange={onChange} name="publisher" value={this.state.publisher} style={{ marginBottom: "10px" }} bsSize="sm" placeholder="PUBLISHER" type="text" />
+                        <Input onChange={onChange} name="year" value={this.state.year} style={{ marginBottom: "10px" }} bsSize="sm" placeholder="YEAR" type="text" />
+                        <Input onChange={onChange} name="edition" value={this.state.edition} style={{ marginBottom: "10px" }} bsSize="sm" placeholder="EDITION" type="text" />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" onClick={addBook}>
+                            ADD THE BOOK
+                        </Button>
+                    </ModalFooter>
+                </Modal>
             </div>
         )
     }

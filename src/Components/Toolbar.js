@@ -3,6 +3,9 @@ import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, NavLink } f
 import Logo from "../Assets/Logo.png"
 class Toolbar extends React.Component {
     render() {
+        const signOut = () => {
+            localStorage.removeItem("userDetails")
+        }
         return (
             <div>
                 <Navbar
@@ -36,7 +39,7 @@ class Toolbar extends React.Component {
                                 </NavLink>
                             </NavItem>
                             <NavItem className="menu-content">
-                                <NavLink href="/">
+                                <NavLink onClick={() => signOut()} href="/">
                                     SIGN OUT
                                 </NavLink>
                             </NavItem>

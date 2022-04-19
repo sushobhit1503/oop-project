@@ -1,10 +1,24 @@
 import React from "react"
 import SideBar from "../Components/SideBar"
+import axios from "axios"
 import { Card, CardText, CardBody, Input, InputGroup, InputGroupText } from "reactstrap"
 import RequestedCard from "../Components/RequestedCard"
 import PendingRequestedCard from "../Components/PendingRequestCard"
 
 class Requests extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            requests: [],
+            pendingRequests: []
+        }
+    }
+    componentDidMount() {
+        const user_uid = JSON.parse(localStorage.getItem("userDetails")).uid
+        axios.get(`http://localhost:8000/api/requests/${user_uid}`).then(data => {
+            console.log(data.data);
+        })
+    }
     render() {
         return (
             <div>
