@@ -8,11 +8,11 @@ class PendingRequestedCard extends React.Component {
                 <Toast style={{ width: "100%", height: "max-content" }}>
                     <ToastBody style={{ display: "flex", justifyContent: "space-between" }}>
                         <div style={{ width: "200px" }}>
-                            <div style={{ fontWeight: "600" }}>TITLE NAME</div>
+                            <div style={{ fontWeight: "600" }}>{this.props.title}</div>
                             <div style={{ color: "var(--grey-color)", fontWeight: "200" }}>BUYER BORROWER NAME</div>
                         </div>
-                        <div style={{ width: "75px", alignSelf: "center", display: "flex" }}>
-                            <div style={{ fontWeight: "800", textAlign: "center" }}>DATE</div>
+                        <div style={{ width: "75px", alignSelf: "center", display: "flex", fontSize: "10px" }}>
+                            <div style={{ fontWeight: "800", textAlign: "center" }}>{this.props.requestedAt}</div>
                         </div>
                         <div style={{ alignSelf: "center" }}>
                             <i className="fa fa-check-circle" style={{ fontSize: "20px", color: "var(--grey-color)", marginRight: "10px" }}></i>

@@ -89,13 +89,15 @@ class Home extends React.Component {
         return (
             <div style={{ display: "flex", justifyContent: "space-around", marginTop: "140px" }}>
                 <div style={{ display: "flex", flexDirection: "column", width: "40%" }}>
-                    <div className="heading" >TAGLINE</div>
-                    <div className="content">
+                    <div className="heading" style={{ color: "white" }} >TAGLINE</div>
+                    <div style={{ color: "white" }} className="content">
                         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
                     </div>
                 </div>
                 <div>
                     <Toast>
+                        {/* {JSON.parse(localStorage.getItem("userDetails")) ?
+                            <div style={{ height: "0px" }}></div> : <div>{pageEffect}</div>} */}
                         {pageEffect}
                     </Toast>
                 </div>

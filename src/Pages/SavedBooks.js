@@ -1,9 +1,24 @@
 import React from "react"
+import axios from "axios"
 import SideBar from "../Components/SideBar"
 import { InputGroup, InputGroupText, Input } from "reactstrap"
 import SavedBooksDisplayCard from "../Components/SavedBooksDisplayCard"
 
 class SavedBooks extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            savedBooks: []
+        }
+    }
+    componentDidMount() {
+        const user = JSON.parse(localStorage.getItem("userDetails")).uid
+        axios.get(`http://localhost:8000/api/saved-books/${user}`).then(data => {
+            this.setState({ savedBooks: [] })
+        }).catch(err => {
+            console.log(err.message);
+        })
+    }
     render() {
         return (
             <div>
@@ -24,10 +39,11 @@ class SavedBooks extends React.Component {
                         <h3>
                             SAVED BOOKS
                         </h3>
-                        <SavedBooksDisplayCard mode="REQUEST" />
-                        <SavedBooksDisplayCard mode="NOT AVAILABLE" />
-                        <SavedBooksDisplayCard mode="REQUEST" />
-                        <SavedBooksDisplayCard mode="REQUEST" />
+                        {this.state.savedBooks.map(each => {
+                            return (
+                                <SavedBooksDisplayCard title={each.title} author={each.author_name} savedAt={each.savedAt} available={each.available} posted_uid={each.posted_by_uid} />
+                            )
+                        })}
                     </div>
                 </div>
             </div>

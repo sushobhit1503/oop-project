@@ -1,9 +1,26 @@
 import React from "react"
 import SideBar from "../Components/SideBar"
-import { InputGroup, InputGroupText, Input, Button, Toast, ToastBody } from "reactstrap"
+import { InputGroup, InputGroupText, Input, Button, Toast, ToastBody, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 
 class Wallet extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            transactions: [],
+            amount: 0,
+            wallet: null,
+            isModalOpen: false
+        }
+    }
+    componentDidMount() {
+        const user = JSON.parse(localStorage.getItem("userDetails")).wallet
+        this.setState({ amount: user })
+    }
     render() {
+        const onChange = event => {
+            const { name, value } = event.target
+            this.setState({ [name]: value })
+        }
         return (
             <div>
                 <SideBar />
@@ -19,7 +36,7 @@ class Wallet extends React.Component {
                             {/* <i className="fa fa-sort"></i> */}
                         </div>
                         <div>
-                            <Button size="sm" style={{ marginLeft: "550px" }}>
+                            <Button onClick={() => this.setState({ isModalOpen: true })} size="sm" style={{ marginLeft: "550px" }}>
                                 <i className="fa fa-plus" style={{ marginRight: "10px" }}></i>
                                 ADD MONEY
                             </Button>
@@ -32,12 +49,25 @@ class Wallet extends React.Component {
                                     AVAILABLE BALANCE:
                                 </div>
                                 <div style={{ color: "black", fontSize: "20px", fontWeight: "800" }}>
-                                    Rs. 600
+                                    Rs: {this.state.amount}
                                 </div>
                             </ToastBody>
                         </Toast>
                     </div>
                 </div>
+                <Modal isOpen={this.state.isModalOpen} toggle={() => { this.setState({ isModalOpen: !this.state.isModalOpen }) }} >
+                    <ModalHeader toggle={() => this.setState({ isModalOpen: !this.state.isModalOpen })}>
+                        ADD MONEY TO WALLET
+                    </ModalHeader>
+                    <ModalBody>
+                        <Input onChange={onChange} name="wallet" value={this.state.wallet} style={{ marginBottom: "10px" }} bsSize="sm" placeholder="AMOUNT in Rs." type="number" />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" onClick={function noRefCheck() { }}>
+                            ADD TO WALLET
+                        </Button>
+                    </ModalFooter>
+                </Modal>
             </div>
         )
     }

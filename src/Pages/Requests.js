@@ -16,7 +16,14 @@ class Requests extends React.Component {
     componentDidMount() {
         const user_uid = JSON.parse(localStorage.getItem("userDetails")).uid
         axios.get(`http://localhost:8000/api/requests/${user_uid}`).then(data => {
-            console.log(data.data);
+            this.setState({ requests: data.data })
+        }).catch(err => {
+            console.log(err.message);
+        })
+        axios.get(`http://localhost:8000/api/pending-requests/${user_uid}`).then(data => {
+            this.setState({ pendingRequests: data.data })
+        }).catch(err => {
+            console.log(err.message);
         })
     }
     render() {
@@ -35,12 +42,11 @@ class Requests extends React.Component {
                                             <i className="fa fa-search"></i>
                                         </InputGroupText>
                                     </InputGroup>
-                                    <RequestedCard />
-                                    <RequestedCard />
-                                    <RequestedCard />
-                                    <RequestedCard />
-                                    <RequestedCard />
-                                    <RequestedCard />
+                                    {this.state.requests.map(each => {
+                                        return (
+                                            <RequestedCard title={each.title} requestedAt={each.requestedAt} />
+                                        )
+                                    })}
                                 </CardText>
                             </CardBody>
                         </Card>
@@ -56,12 +62,11 @@ class Requests extends React.Component {
                                             <i className="fa fa-search"></i>
                                         </InputGroupText>
                                     </InputGroup>
-                                    <PendingRequestedCard />
-                                    <PendingRequestedCard />
-                                    <PendingRequestedCard />
-                                    <PendingRequestedCard />
-                                    <PendingRequestedCard />
-                                    <PendingRequestedCard />
+                                    {this.state.pendingRequests.map(each => {
+                                        return (
+                                            <PendingRequestedCard title={each.title} requestedAt={each.requestedAt} />
+                                        )
+                                    })}
                                 </CardText>
                             </CardBody>
                         </Card>
