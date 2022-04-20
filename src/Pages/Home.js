@@ -22,8 +22,23 @@ class Home extends React.Component {
             const { name, value } = event.target
             this.setState({ [name]: value })
         }
-        const onLoginSubmit = () => {
-
+        const onLoginSubmit = async () => {
+            const { username } = this.state
+            axios.get(`http://localhost:8000/user/${username}`).then(data => {
+                console.log(data.data);
+                try {
+                    bcrypt.compare(this.state.password, data.data.password).then(match => {
+                        console.log(match);
+                        if (match) {
+                            localStorage.setItem("userDetails", JSON.stringify(data.data))
+                            console.log(JSON.parse(localStorage.getItem("userDetails")));
+                        }
+                    })
+                }
+                catch (err) {
+                    console.log(err.message);
+                }
+            })
         }
         const onSignupSubmit = async () => {
             var hashed_password = null

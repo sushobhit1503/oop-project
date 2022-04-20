@@ -1,8 +1,9 @@
 import React from "react"
 import SideBar from "../Components/SideBar"
+import axios from "axios"
+import RequestedCard from "../Components/RequestedCard"
 import ProfilePic from "../Assets/ProfilePic.png"
-import ExchangeHistory from "../Components/ExchangeHistory"
-import { Card, CardText, CardBody, Input, InputGroup, InputGroupText, Button } from "reactstrap"
+import { Card, CardText, CardBody, Input, InputGroup, InputGroupText, Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 
 class MyProfile extends React.Component {
     constructor() {
@@ -11,14 +12,26 @@ class MyProfile extends React.Component {
             user: {},
             name: "",
             address: "",
-            phone_number: 0
+            phone_number: 0,
+            isModalOpen: false,
+            type: "",
+            requests: []
         }
     }
     componentDidMount() {
         const user = JSON.parse(localStorage.getItem("userDetails"))
         this.setState({ user: user, name: user.name, address: user.address, phone_number: user.phone_number })
+        axios.get(`http://localhost:8000/api/requests/${user.uid}`).then(data => {
+            this.setState({ requests: data.data })
+        }).catch(err => {
+            console.log(err.message);
+        })
     }
     render() {
+        const onChange = (event) => {
+            const { name, value } = event.target
+            this.setState({ [name]: value })
+        }
         return (
             <div>
                 <SideBar />
@@ -33,7 +46,7 @@ class MyProfile extends React.Component {
                                     <div style={{ fontWeight: "700", fontSize: "22px", color: "var(--blue-color)", textAlign: "center", marginBottom: "30px" }}>{this.state.user.username}</div>
                                     <InputGroup style={{ width: "70%", margin: "5px", alignSelf: "center" }}>
                                         <Input value={this.state.name} placeholder="NAME" />
-                                        <Button style={{ backgroundColor: "white", borderBlockColor: "var(--place-holder-color)" }}>
+                                        <Button onClick={() => { this.setState({ type: "name", isModalOpen: true }) }} style={{ backgroundColor: "white", borderBlockColor: "var(--place-holder-color)" }}>
                                             <i className="fas fa-pen" style={{ color: "var(--grey-color)" }}></i>
                                         </Button>
                                     </InputGroup>
@@ -45,13 +58,13 @@ class MyProfile extends React.Component {
                                     </InputGroup>
                                     <InputGroup style={{ width: "70%", margin: "5px", alignSelf: "center" }}>
                                         <Input value={this.state.address} placeholder="ADDRESS" />
-                                        <Button style={{ backgroundColor: "white", borderBlockColor: "var(--place-holder-color)" }}>
+                                        <Button onClick={() => { this.setState({ type: "address", isModalOpen: true }) }} style={{ backgroundColor: "white", borderBlockColor: "var(--place-holder-color)" }}>
                                             <i className="fas fa-pen" style={{ color: "var(--grey-color)" }}></i>
                                         </Button>
                                     </InputGroup>
                                     <InputGroup style={{ width: "70%", margin: "5px", alignSelf: "center" }}>
                                         <Input value={this.state.phone_number} placeholder="PHONE NUMBER" />
-                                        <Button style={{ backgroundColor: "white", borderBlockColor: "var(--place-holder-color)" }}>
+                                        <Button onClick={() => { this.setState({ type: "phone_number", isModalOpen: true }) }} style={{ backgroundColor: "white", borderBlockColor: "var(--place-holder-color)" }}>
                                             <i className="fas fa-pen" style={{ color: "var(--grey-color)" }}></i>
                                         </Button>
                                     </InputGroup>
@@ -75,17 +88,29 @@ class MyProfile extends React.Component {
                                             <i className="fa fa-search"></i>
                                         </InputGroupText>
                                     </InputGroup>
-                                    <ExchangeHistory />
-                                    <ExchangeHistory />
-                                    <ExchangeHistory />
-                                    <ExchangeHistory />
-                                    <ExchangeHistory />
-                                    <ExchangeHistory />
+                                    {this.state.requests.map(each => {
+                                        return (
+                                            <RequestedCard title={each.title} requestedAt={each.requestedAt} />
+                                        )
+                                    })}
                                 </CardText>
                             </CardBody>
                         </Card>
                     </div>
                 </div>
+                <Modal isOpen={this.state.isModalOpen} toggle={() => this.setState({ isModalOpen: !this.state.isModalOpen })} >
+                    <ModalHeader toggle={() => this.setState({ isModalOpen: !this.state.isModalOpen })}>
+                        {this.state.type === "phone_number" ? <div>CHANGE PHONE NUMBER</div> : <div>CHANGE {this.state.type}</div>}
+                    </ModalHeader>
+                    <ModalBody>
+                        <Input onChange={onChange} name={this.state.type} value={this.state.type} style={{ marginBottom: "10px" }} bsSize="sm" placeholder={this.state.type === "phone_number" ? `ENTER NEW PHONE NUMBER` : `ENTER NEW ${this.state.type}`} type={this.state.type === "phone_number" ? "number" : "text"} />
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button color="success" >
+                            CHANGE
+                        </Button>
+                    </ModalFooter>
+                </Modal>
             </div>
         )
     }

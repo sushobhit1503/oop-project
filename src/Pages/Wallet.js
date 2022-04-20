@@ -1,20 +1,33 @@
 import React from "react"
 import SideBar from "../Components/SideBar"
 import { InputGroup, InputGroupText, Input, Button, Toast, ToastBody, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
+import Transaction from "../Components/Transaction"
+import axios from "axios"
 
 class Wallet extends React.Component {
     constructor() {
         super()
         this.state = {
-            transactions: [],
+            transactionsDebit: [],
+            transactionsCredit: [],
             amount: 0,
             wallet: null,
             isModalOpen: false
         }
     }
     componentDidMount() {
-        const user = JSON.parse(localStorage.getItem("userDetails")).wallet
-        this.setState({ amount: user })
+        const user = JSON.parse(localStorage.getItem("userDetails"))
+        this.setState({ amount: user.wallet })
+        axios.get(`http://localhost:8000/api/transactions/credit/${user.uid}`).then(each => {
+            this.setState({ transactionsCredit: each.data })
+        }).catch(err => {
+            console.log(err.message);
+        })
+        axios.get(`http://localhost:8000/api/transactions/debit/${user.uid}`).then(each => {
+            this.setState({ transactionsDebit: each.data })
+        }).catch(err => {
+            console.log(err.message);
+        })
     }
     render() {
         const onChange = event => {
@@ -53,6 +66,9 @@ class Wallet extends React.Component {
                                 </div>
                             </ToastBody>
                         </Toast>
+                        <div style={{ width: "100%" }}>
+                            <Transaction />
+                        </div>
                     </div>
                 </div>
                 <Modal isOpen={this.state.isModalOpen} toggle={() => { this.setState({ isModalOpen: !this.state.isModalOpen }) }} >

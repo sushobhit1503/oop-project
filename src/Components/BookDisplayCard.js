@@ -1,8 +1,23 @@
 import React from "react"
+import axios from "axios";
 import { ToastBody, Toast, Button } from "reactstrap"
 
 class BookDisplayCard extends React.Component {
     render() {
+        const savedBooks = () => {
+            const user = JSON.parse(localStorage.getItem("userDetails")).uid
+            const data = {
+                title: this.props.name,
+                author_name: this.props.author,
+                posted_by_uid: this.props.posted_student_uid,
+                available: true,
+                book_uid: this.props.uid,
+                saved_by: user
+            }
+            axios.post("http://localhost:8000/api/saved-books", data).then(data => {
+                console.log(data.data);
+            })
+        }
         return (
             <div style={{ margin: "5px" }}>
                 <Toast>
@@ -23,7 +38,7 @@ class BookDisplayCard extends React.Component {
                                 </div>
                             </div>
                             <div>
-                                <i className="far fa-bookmark" style={{ fontSize: "30px" }}></i>
+                                <i onClick={savedBooks} className="far fa-bookmark" style={{ fontSize: "30px" }}></i>
                             </div>
                         </div>
                         <div style={{ display: "flex", justifyContent: "center" }}>

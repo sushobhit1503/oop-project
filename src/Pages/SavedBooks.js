@@ -14,7 +14,7 @@ class SavedBooks extends React.Component {
     componentDidMount() {
         const user = JSON.parse(localStorage.getItem("userDetails")).uid
         axios.get(`http://localhost:8000/api/saved-books/${user}`).then(data => {
-            this.setState({ savedBooks: [] })
+            this.setState({ savedBooks: data.data })
         }).catch(err => {
             console.log(err.message);
         })

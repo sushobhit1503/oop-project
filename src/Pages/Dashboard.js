@@ -66,7 +66,7 @@ class Dashboard extends React.Component {
                     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", padding: "10px", marginTop: "10px", overflowX: "hidden", overflow: "scroll", backgroundColor: "rgba(255, 255, 255, 1)", borderRadius: "10px", width: "100%", height: "100%" }}>
                         {this.state.allData.map(each => {
                             return (
-                                <BookDisplayCard name={each.title} author={each.author_name} publisher={each.publisher} listed={each.name} />
+                                <BookDisplayCard each={each} name={each.title} author={each.author_name} publisher={each.publisher} listed={each.name} />
                             )
                         })}
                     </div>
