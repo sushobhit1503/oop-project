@@ -72,7 +72,7 @@ class Requests extends React.Component {
                                     </InputGroup>
                                     {filteredArray1.map(each => {
                                         return (
-                                            <PendingRequestedCard title={each.title} requestedAt={each.requestedAt} />
+                                            <PendingRequestedCard each={each} title={each.title} requestedAt={each.requestedAt} />
                                         )
                                     })}
                                 </CardText>

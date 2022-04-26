@@ -1,7 +1,7 @@
 import React from "react"
 import { Nav, Collapse, Navbar, NavItem, NavLink } from "reactstrap"
 
-class SideBar extends React.Component {
+class SideBarAdmin extends React.Component {
     render() {
         return (
             <div>
@@ -37,4 +37,4 @@ class SideBar extends React.Component {
     }
 }
 
-export default SideBar
+export default SideBarAdmin

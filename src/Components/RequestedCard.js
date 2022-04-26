@@ -19,10 +19,9 @@ class RequestedCard extends React.Component {
                         <div style={{ width: "175px" }}>
                             <div style={{ fontWeight: "600" }}>{this.props.title}</div>
                             <div style={{ color: "var(--grey-color)", fontWeight: "200" }}>BUYER BORROWER NAME</div>
-                        </div>
-                        <div style={{ width: "90px", alignSelf: "center", display: "flex", fontSize: "10px" }}>
-                            <div style={{ fontWeight: "800", textAlign: "center" }}>{moment(this.props.requestedAt).format("DD-MM-YYYY")}</div>
-                            <div style={{ width: "10px", height: "10px", borderRadius: "50px", alignSelf: 'center', marginLeft: "10px", backgroundColor: "var(--green-color)" }}></div>
+                            <div style={{ width: "90px", alignSelf: "center", display: "flex", fontSize: "15px" }}>
+                                <div style={{ fontWeight: "600", textAlign: "center" }}>{moment(this.props.requestedAt).format("DD-MM-YYYY")}</div>
+                            </div>
                         </div>
                         <div>
                             <Button onClick={extendRequest} color="success" style={{ fontWeight: "500", width: "max-content", border: "none" }}>

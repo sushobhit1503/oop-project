@@ -20,6 +20,11 @@ class SideBar extends React.Component {
                                 </NavLink>
                             </NavItem>
                             <NavItem className="menu-content">
+                                <NavLink href="/books-published">
+                                    BOOKS PUBLISHED
+                                </NavLink>
+                            </NavItem>
+                            <NavItem className="menu-content">
                                 <NavLink href="/wallet">
                                     WALLET
                                 </NavLink>

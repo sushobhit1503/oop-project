@@ -1,7 +1,7 @@
 import axios from "axios"
 import React from "react"
-import SideBarAdmin from "../Components/SideBarAdmin"
-import StatCards from "../Components/StatCards"
+import SideBarAdmin from "../../Components/SideBarAdmin"
+import StatCards from "../../Components/StatCards"
 
 
 class Admin extends React.Component {

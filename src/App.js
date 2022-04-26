@@ -8,7 +8,9 @@ import Dashboard from './Pages/Dashboard';
 import Wallet from './Pages/Wallet';
 import SavedBooks from './Pages/SavedBooks';
 import Requests from './Pages/Requests';
-import Admin from './Pages/Admin';
+import Admin from './Pages/Admin/Admin';
+import Users from './Pages/Admin/Users';
+import Transactions from './Pages/Admin/Transactions';
 
 class App extends React.Component {
   constructor() {
@@ -37,6 +39,8 @@ class App extends React.Component {
           <Route path="/saved-books" exact element={<SavedBooks />} />
           <Route path="/requests" exact element={<Requests />} />
           <Route path="/admin-panel" exact element={<Admin />} />
+          <Route path="/all-users" exact element={<Users />} />
+          <Route path="/all-transaction" exact element={<Transactions />} />
         </Routes>
       </div>
     );
