@@ -1,9 +1,17 @@
 import React from "react"
 import moment from "moment"
 import { ToastBody, Toast, Button } from "reactstrap"
+import axios from "axios"
 
 class RequestedCard extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            name: ""
+        }
+    }
     render() {
+        const extendRequest = () => { }
         return (
             <div style={{ margin: "7px" }}>
                 <Toast style={{ width: "100%", height: "max-content" }}>
@@ -15,6 +23,11 @@ class RequestedCard extends React.Component {
                         <div style={{ width: "90px", alignSelf: "center", display: "flex", fontSize: "10px" }}>
                             <div style={{ fontWeight: "800", textAlign: "center" }}>{moment(this.props.requestedAt).format("DD-MM-YYYY")}</div>
                             <div style={{ width: "10px", height: "10px", borderRadius: "50px", alignSelf: 'center', marginLeft: "10px", backgroundColor: "var(--green-color)" }}></div>
+                        </div>
+                        <div>
+                            <Button onClick={extendRequest} color="success" style={{ fontWeight: "500", width: "max-content", border: "none" }}>
+                                EXTEND
+                            </Button>
                         </div>
                         <div style={{ alignSelf: "center" }}>
                             <i className="fa fa-trash" style={{ fontSize: "25px", color: "var(--grey-color)" }}></i>

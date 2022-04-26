@@ -14,7 +14,8 @@ class Dashboard extends React.Component {
             edition: "",
             author_name: "",
             publisher: "",
-            year: ""
+            year: "",
+            search: ""
         }
     }
     componentDidMount() {
@@ -23,13 +24,14 @@ class Dashboard extends React.Component {
         }).catch(err => console.log(err.message))
     }
     render() {
+        const filteredArray = this.state.allData.filter(book => book.title.toLowerCase().includes(this.state.search.toLowerCase()))
         const onChange = (event) => {
             const { name, value } = event.target
             this.setState({ [name]: value })
         }
         const addBook = () => {
             this.setState({ isModalOpen: false })
-            const user_id = JSON.parse(localStorage.getItem("userDetails")).uid
+            const user_id = JSON.parse(localStorage.getItem("userDetails")).name
             const data = {
                 title: this.state.title,
                 author_name: this.state.author_name,
@@ -49,7 +51,7 @@ class Dashboard extends React.Component {
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div>
                             <InputGroup style={{ width: "200%" }} size="sm">
-                                <Input placeholder="SEARCH..." />
+                                <Input onChange={onChange} name="search" value={this.state.search} placeholder="SEARCH..." />
                                 <InputGroupText>
                                     <i className="fa fa-search"></i>
                                 </InputGroupText>
@@ -64,9 +66,9 @@ class Dashboard extends React.Component {
                         </div>
                     </div>
                     <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", padding: "10px", marginTop: "10px", overflowX: "hidden", overflow: "scroll", backgroundColor: "rgba(255, 255, 255, 1)", borderRadius: "10px", width: "100%", height: "100%" }}>
-                        {this.state.allData.map(each => {
+                        {filteredArray.map(each => {
                             return (
-                                <BookDisplayCard each={each} name={each.title} author={each.author_name} publisher={each.publisher} listed={each.name} />
+                                <BookDisplayCard uid={each.uid} each={each} name={each.title} author={each.author_name} publisher={each.publisher} listed={each.posted_student_uid} />
                             )
                         })}
                     </div>

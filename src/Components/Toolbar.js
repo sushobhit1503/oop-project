@@ -1,10 +1,26 @@
 import React from "react"
-import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, NavLink } from "reactstrap"
+import { Nav, Navbar, NavbarBrand, NavbarToggler, Collapse, NavItem, NavLink, Alert } from "reactstrap"
 import Logo from "../Assets/Logo.png"
 class Toolbar extends React.Component {
+    constructor() {
+        super()
+        this.state = {
+            isAlert: false,
+            isAdmin: false
+        }
+    }
+    componentDidMount() {
+        const user = JSON.parse(localStorage.getItem("userDetails")).admin
+        console.log(user);
+        if (user)
+            this.setState({ isAdmin: true })
+        else
+            this.setState({ isAdmin: false })
+    }
     render() {
         const signOut = () => {
             localStorage.removeItem("userDetails")
+
         }
         return (
             <div>
@@ -38,6 +54,11 @@ class Toolbar extends React.Component {
                                     REQUESTS
                                 </NavLink>
                             </NavItem>
+                            {this.state.isAdmin ? <NavItem className="menu-content">
+                                <NavLink href="/admin-panel">
+                                    ADMIN PANEL
+                                </NavLink>
+                            </NavItem> : null}
                             <NavItem className="menu-content">
                                 <NavLink onClick={() => signOut()} href="/">
                                     SIGN OUT
@@ -47,6 +68,9 @@ class Toolbar extends React.Component {
                         </Nav>
                     </Collapse>
                 </Navbar>
+                {/* <Alert style={{ position: "absolute" }} color="success" dismissible>
+                    You have been successfully logged out !!
+                </Alert> */}
             </div>
         )
     }

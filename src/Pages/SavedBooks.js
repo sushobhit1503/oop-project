@@ -8,7 +8,8 @@ class SavedBooks extends React.Component {
     constructor() {
         super()
         this.state = {
-            savedBooks: []
+            savedBooks: [],
+            searchValue: ""
         }
     }
     componentDidMount() {
@@ -20,6 +21,11 @@ class SavedBooks extends React.Component {
         })
     }
     render() {
+        const onChange = (event) => {
+            const { name, value } = event.target
+            this.setState({ [name]: value })
+        }
+        const filteredArray = this.state.savedBooks.filter(book => book.title.toLowerCase().includes(this.state.searchValue.toLowerCase()))
         return (
             <div>
                 <SideBar />
@@ -27,7 +33,7 @@ class SavedBooks extends React.Component {
                     <div style={{ display: "flex", justifyContent: "space-between" }}>
                         <div>
                             <InputGroup style={{ width: "200%" }} size="sm">
-                                <Input placeholder="SEARCH SAVED BOOKS..." />
+                                <Input onChange={onChange} value={this.state.searchValue} name="searchValue" placeholder="SEARCH SAVED BOOKS..." />
                                 <InputGroupText>
                                     <i className="fa fa-search"></i>
                                 </InputGroupText>
@@ -39,9 +45,9 @@ class SavedBooks extends React.Component {
                         <h3>
                             SAVED BOOKS
                         </h3>
-                        {this.state.savedBooks.map(each => {
+                        {filteredArray.map(each => {
                             return (
-                                <SavedBooksDisplayCard title={each.title} author={each.author_name} savedAt={each.savedAt} available={each.available} posted_uid={each.posted_by_uid} />
+                                <SavedBooksDisplayCard title={each.title} author={each.author_name} savedAt={each.savedAt} available={each.available} posted_uid={each.posted_by_uid} saved_by={each.saved_by} uid={each.uid} />
                             )
                         })}
                     </div>

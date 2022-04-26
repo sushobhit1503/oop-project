@@ -1,6 +1,6 @@
 import React from "react"
 import SideBar from "../Components/SideBar"
-import { InputGroup, InputGroupText, Input, Button, Toast, ToastBody, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
+import { InputGroup, InputGroupText, Input, Button, Toast, ToastBody, Modal, ModalBody, ModalFooter, ModalHeader, Card, CardBody, CardFooter, CardText } from "reactstrap"
 import Transaction from "../Components/Transaction"
 import axios from "axios"
 
@@ -12,7 +12,9 @@ class Wallet extends React.Component {
             transactionsCredit: [],
             amount: 0,
             wallet: null,
-            isModalOpen: false
+            isModalOpen: false,
+            requestValue: "",
+            pendingValue: ""
         }
     }
     componentDidMount() {
@@ -34,6 +36,8 @@ class Wallet extends React.Component {
             const { name, value } = event.target
             this.setState({ [name]: value })
         }
+        const filteredArray = this.state.transactionsDebit.filter(book => book.title.toLowerCase().includes(this.state.requestValue.toLowerCase()))
+        const filteredArray1 = this.state.transactionsCredit.filter(book => book.title.toLowerCase().includes(this.state.pendingValue.toLowerCase()))
         return (
             <div>
                 <SideBar />
@@ -64,11 +68,69 @@ class Wallet extends React.Component {
                                 <div style={{ color: "black", fontSize: "20px", fontWeight: "800" }}>
                                     Rs: {this.state.amount}
                                 </div>
+                                <Card style={{ marginRight: "10px", height: "100%", overflow: "scroll" }}>
+                                    <CardBody>
+                                        <CardText>
+                                            <div style={{ fontWeight: "700", fontSize: "22px", color: "var(--blue-color)" }}>REQUESTED</div>
+                                            <InputGroup size="sm">
+                                                <Input onChange={onChange} value={this.state.requestValue} name="requestValue" placeholder="SEARCH REQUESTS..." />
+                                                <InputGroupText>
+                                                    <i className="fa fa-search"></i>
+                                                </InputGroupText>
+                                            </InputGroup>
+                                            {filteredArray.map(each => {
+                                                return (
+                                                    <Transaction title={each.title} requestedAt={each.requestedAt} />
+                                                )
+                                            })}
+                                        </CardText>
+                                    </CardBody>
+                                </Card>
+                                <div style={{ display: "flex", justifyContent: "space-between", padding: "10px", position: "absolute", margin: "10px 15px 0px 300px", backgroundColor: "rgba(255, 255, 255, 0.2)", borderRadius: "10px", width: "75%", height: "80%" }}>
+                                    <div>
+                                        <Card style={{ marginRight: "10px", height: "100%", overflow: "scroll" }}>
+                                            <CardBody>
+                                                <CardText>
+                                                    <div style={{ fontWeight: "700", fontSize: "22px", color: "var(--blue-color)" }}>REQUESTED</div>
+                                                    <InputGroup size="sm">
+                                                        <Input onChange={onChange} value={this.state.requestValue} name="requestValue" placeholder="SEARCH REQUESTS..." />
+                                                        <InputGroupText>
+                                                            <i className="fa fa-search"></i>
+                                                        </InputGroupText>
+                                                    </InputGroup>
+                                                    {filteredArray.map(each => {
+                                                        return (
+                                                            <Transaction title={each.title} requestedAt={each.requestedAt} />
+                                                        )
+                                                    })}
+                                                </CardText>
+                                            </CardBody>
+                                        </Card>
+                                    </div>
+                                    <div style={{ width: "50%" }}>
+                                        <Card style={{ height: "100%", overflow: "scroll" }}>
+                                            <CardBody>
+                                                <CardText style={{ display: "flex", flexDirection: "column" }}>
+                                                    <div style={{ fontWeight: "700", fontSize: "22px", color: "var(--blue-color)" }}>PENDING REQUESTS</div>
+                                                    <InputGroup size="sm">
+                                                        <Input name="pendingValue" onChange={onChange} value={this.state.pendingValue} placeholder="SEARCH PENDING REQUESTS..." />
+                                                        <InputGroupText>
+                                                            <i className="fa fa-search"></i>
+                                                        </InputGroupText>
+                                                    </InputGroup>
+                                                    {filteredArray1.map(each => {
+                                                        return (
+                                                            <Transaction title={each.title} requestedAt={each.requestedAt} />
+                                                        )
+                                                    })}
+                                                </CardText>
+                                            </CardBody>
+                                        </Card>
+                                    </div>
+                                </div>
                             </ToastBody>
                         </Toast>
-                        <div style={{ width: "100%" }}>
-                            <Transaction />
-                        </div>
+
                     </div>
                 </div>
                 <Modal isOpen={this.state.isModalOpen} toggle={() => { this.setState({ isModalOpen: !this.state.isModalOpen }) }} >

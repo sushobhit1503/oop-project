@@ -10,7 +10,9 @@ class Requests extends React.Component {
         super()
         this.state = {
             requests: [],
-            pendingRequests: []
+            pendingRequests: [],
+            requestValue: "",
+            pendingValue: ""
         }
     }
     componentDidMount() {
@@ -27,6 +29,12 @@ class Requests extends React.Component {
         })
     }
     render() {
+        const onChange = (event) => {
+            const { name, value } = event.target
+            this.setState({ [name]: value })
+        }
+        const filteredArray = this.state.requests.filter(book => book.title.toLowerCase().includes(this.state.requestValue.toLowerCase()))
+        const filteredArray1 = this.state.pendingRequests.filter(book => book.title.toLowerCase().includes(this.state.pendingValue.toLowerCase()))
         return (
             <div>
                 <SideBar />
@@ -37,12 +45,12 @@ class Requests extends React.Component {
                                 <CardText>
                                     <div style={{ fontWeight: "700", fontSize: "22px", color: "var(--blue-color)" }}>REQUESTED</div>
                                     <InputGroup size="sm">
-                                        <Input placeholder="SEARCH REQUESTS..." />
+                                        <Input onChange={onChange} value={this.state.requestValue} name="requestValue" placeholder="SEARCH REQUESTS..." />
                                         <InputGroupText>
                                             <i className="fa fa-search"></i>
                                         </InputGroupText>
                                     </InputGroup>
-                                    {this.state.requests.map(each => {
+                                    {filteredArray.map(each => {
                                         return (
                                             <RequestedCard title={each.title} requestedAt={each.requestedAt} />
                                         )
@@ -57,12 +65,12 @@ class Requests extends React.Component {
                                 <CardText style={{ display: "flex", flexDirection: "column" }}>
                                     <div style={{ fontWeight: "700", fontSize: "22px", color: "var(--blue-color)" }}>PENDING REQUESTS</div>
                                     <InputGroup size="sm">
-                                        <Input placeholder="SEARCH PENDING REQUESTS..." />
+                                        <Input name="pendingValue" onChange={onChange} value={this.state.pendingValue} placeholder="SEARCH PENDING REQUESTS..." />
                                         <InputGroupText>
                                             <i className="fa fa-search"></i>
                                         </InputGroupText>
                                     </InputGroup>
-                                    {this.state.pendingRequests.map(each => {
+                                    {filteredArray1.map(each => {
                                         return (
                                             <PendingRequestedCard title={each.title} requestedAt={each.requestedAt} />
                                         )

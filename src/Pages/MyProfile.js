@@ -3,6 +3,7 @@ import SideBar from "../Components/SideBar"
 import axios from "axios"
 import RequestedCard from "../Components/RequestedCard"
 import ProfilePic from "../Assets/ProfilePic.png"
+import bcrypt from "bcryptjs"
 import { Card, CardText, CardBody, Input, InputGroup, InputGroupText, Button, Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap"
 
 class MyProfile extends React.Component {
@@ -15,7 +16,11 @@ class MyProfile extends React.Component {
             phone_number: 0,
             isModalOpen: false,
             type: "",
-            requests: []
+            requests: [],
+            isModalOpenPassword: false,
+            oldpassword: "",
+            newpassword: "",
+            message: ""
         }
     }
     componentDidMount() {
@@ -31,6 +36,28 @@ class MyProfile extends React.Component {
         const onChange = (event) => {
             const { name, value } = event.target
             this.setState({ [name]: value })
+        }
+        const changePassword = () => {
+            const user = JSON.parse(localStorage.getItem("userDetails"))
+            bcrypt.compare(this.state.oldpassword, user.password).then(match => {
+                if (match) {
+                    var hashed_password = null
+                    bcrypt.genSalt().then(salt => {
+                        bcrypt.hash(this.state.newpassword, salt).then(got => {
+                            hashed_password = got
+                        })
+                    })
+                    const data = {
+                        newpassword: hashed_password
+                    }
+                    axios.put(`http://localhost:8000/user/auth/change-password/${user.uid}`, data).then(data => {
+                        this.setState({ message: "The password has been updated" })
+                    }).catch(err => console.log(err.message))
+                }
+                else {
+                    this.setState({ message: "Please enter correct old password" })
+                }
+            })
         }
         return (
             <div>
@@ -68,7 +95,7 @@ class MyProfile extends React.Component {
                                             <i className="fas fa-pen" style={{ color: "var(--grey-color)" }}></i>
                                         </Button>
                                     </InputGroup>
-                                    <Button style={{ width: "250px", alignSelf: "center", marginTop: "30px", backgroundColor: "var(--light-blue-color)", color: "var(--blue-color)", fontWeight: "700", border: "none" }}>
+                                    <Button onClick={() => this.setState({ isModalOpenPassword: true })} style={{ width: "250px", alignSelf: "center", marginTop: "30px", backgroundColor: "var(--light-blue-color)", color: "var(--blue-color)", fontWeight: "700", border: "none" }}>
                                         RESET PASSWORD
                                     </Button>
                                 </CardText>
@@ -108,6 +135,21 @@ class MyProfile extends React.Component {
                     <ModalFooter>
                         <Button color="success" >
                             CHANGE
+                        </Button>
+                    </ModalFooter>
+                </Modal>
+                <Modal isOpen={this.state.isModalOpenPassword} toggle={() => this.setState({ isModalOpenPassword: !this.state.isModalOpen })} >
+                    <ModalHeader toggle={() => this.setState({ isModalOpenPassword: !this.state.isModalOpenPassword })}>
+                        RESET PASSWORD
+                    </ModalHeader>
+                    <ModalBody>
+                        <Input style={{ marginBottom: "10px" }} bsSize="sm" onChange={onChange} value={this.state.oldpassword} name="oldpassword" type="password" placeholder="ENTER OLD PASSWORD" />
+                        <Input style={{ marginBottom: "10px" }} bsSize="sm" onChange={onChange} value={this.state.newpassword} name="newpassword" type="password" placeholder="ENTER NEW PASSWORD" />
+                        {this.state.message}
+                    </ModalBody>
+                    <ModalFooter>
+                        <Button onClick={changePassword} color="success" >
+                            RESET PASSWORD
                         </Button>
                     </ModalFooter>
                 </Modal>

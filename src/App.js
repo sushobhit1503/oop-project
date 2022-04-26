@@ -8,12 +8,27 @@ import Dashboard from './Pages/Dashboard';
 import Wallet from './Pages/Wallet';
 import SavedBooks from './Pages/SavedBooks';
 import Requests from './Pages/Requests';
+import Admin from './Pages/Admin';
 
 class App extends React.Component {
+  constructor() {
+    super()
+    this.state = {
+      authentication: false
+    }
+  }
+  componentDidMount() {
+    const user = JSON.parse(localStorage.getItem("userDetails"))
+    if (user)
+      this.setState({ authentication: true })
+    else
+      this.setState({ authentication: false })
+  }
   render() {
     return (
       <div className="App">
-        <Toolbar />
+        {this.state.authentication ? <Toolbar /> : null}
+
         <Routes>
           <Route path="/" exact element={<Home />} />
           <Route path="/my-profile" exact element={<MyProfile />} />
@@ -21,6 +36,7 @@ class App extends React.Component {
           <Route path="/wallet" exact element={<Wallet />} />
           <Route path="/saved-books" exact element={<SavedBooks />} />
           <Route path="/requests" exact element={<Requests />} />
+          <Route path="/admin-panel" exact element={<Admin />} />
         </Routes>
       </div>
     );

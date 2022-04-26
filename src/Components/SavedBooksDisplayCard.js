@@ -1,9 +1,18 @@
 import React from "react"
 import moment from "moment"
+import axios from "axios"
 import { ToastBody, Toast, Button } from "reactstrap"
 
 class SavedBooksDisplayCard extends React.Component {
     render() {
+        const deleteSavedBook = () => {
+            const { uid, saved_by } = this.props
+            axios.delete(`http://localhost:8000/api/saved-books/${uid}/${saved_by}`).then(data => {
+                console.log(data);
+            }).catch(err => {
+                console.log(err);
+            })
+        }
         return (
             <div style={{ margin: "5px" }}>
                 <Toast style={{ width: "100%", height: "max-content" }}>
@@ -18,8 +27,11 @@ class SavedBooksDisplayCard extends React.Component {
                             <div style={{ color: "var(--grey-color)", fontWeight: "600", textAlign: "center" }}>{moment(this.props.savedAt).format("DD-MM-YYYY")}</div>
                         </div>
                         <div style={{ alignSelf: "center" }}>
-                            <Button style={{ backgroundColor: "var(--light-blue-color)", color: "var(--blue-color)", fontWeight: "500", width: "200px", border: "none" }}>
+                            <Button style={{ backgroundColor: "var(--light-blue-color)", color: "var(--blue-color)", fontWeight: "500", width: "150px", border: "none", marginRight: "5px" }}>
                                 {this.props.available ? <div>REQUEST</div> : <div>NOT AVAILABLE</div>}
+                            </Button>
+                            <Button onClick={deleteSavedBook} color="danger" style={{ fontWeight: "500", width: "150px", border: "none" }}>
+                                DELETE
                             </Button>
                         </div>
                     </ToastBody>

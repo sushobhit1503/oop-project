@@ -1,7 +1,7 @@
 import axios from "axios"
 import React from "react"
 import bcrypt from "bcryptjs"
-import { Input, Toast, ToastBody, Button } from "reactstrap"
+import { Input, Toast, ToastBody, Button, Alert } from "reactstrap"
 
 class Home extends React.Component {
     constructor() {
@@ -14,24 +14,30 @@ class Home extends React.Component {
             password: "",
             confirmpassword: "",
             username: "",
-            pageId: 1
+            pageId: 1,
+            error: "",
+            alert: false
         }
+
+        this.basicState = this.state
     }
     render() {
         const onChange = (event) => {
             const { name, value } = event.target
             this.setState({ [name]: value })
         }
+        var disabledSignup = (this.state.password === "" || this.state.email === "" || this.state.name === "" || this.state.address === "" || this.state.phonenumber === null || this.state.username === "")
+        var disabledLogin = (this.state.username === "" || this.state.password === "")
         const onLoginSubmit = async () => {
             const { username } = this.state
             axios.get(`http://localhost:8000/user/${username}`).then(data => {
-                console.log(data.data);
                 try {
                     bcrypt.compare(this.state.password, data.data.password).then(match => {
-                        console.log(match);
                         if (match) {
                             localStorage.setItem("userDetails", JSON.stringify(data.data))
-                            console.log(JSON.parse(localStorage.getItem("userDetails")));
+                            this.setState({ alert: true })
+                            setTimeout(() => this.setState({ alert: false }), 5000)
+                            this.setState(this.basicState)
                         }
                     })
                 }
@@ -41,29 +47,35 @@ class Home extends React.Component {
             })
         }
         const onSignupSubmit = async () => {
-            var hashed_password = null
-            try {
-                const salt = await bcrypt.genSalt()
-                hashed_password = await bcrypt.hash(this.state.password, salt)
+            if (this.state.password !== this.state.confirmpassword)
+                this.setState({ error: "The passwords are not matching. Please try again" })
+            else {
+                var hashed_password = null
+                try {
+                    const salt = await bcrypt.genSalt()
+                    hashed_password = await bcrypt.hash(this.state.password, salt)
+                }
+                catch (err) {
+                    console.log(err.message);
+                }
+                const data = {
+                    name: this.state.name,
+                    email: this.state.email,
+                    address: this.state.address,
+                    password: hashed_password,
+                    username: this.state.username,
+                    phone_number: this.state.phonenumber,
+                    wallet: 0,
+                    admin: false
+                }
+                axios.post("http://localhost:8000/user/auth", data).then(user => {
+                    localStorage.setItem("userDetails", JSON.stringify(user.data))
+                    this.setState({ alert: true })
+                    setTimeout(() => this.setState(this.basicState), 5000)
+                }).catch(err => {
+                    console.log(err.message);
+                })
             }
-            catch (err) {
-                console.log(err.message);
-            }
-            const data = {
-                name: this.state.name,
-                email: this.state.email,
-                address: this.state.address,
-                password: hashed_password,
-                username: this.state.username,
-                phone_number: this.state.phonenumber,
-                wallet: 0,
-                admin: false
-            }
-            axios.post("http://localhost:8000/user/auth", data).then(user => {
-                localStorage.setItem("userDetails", JSON.stringify(user.data))
-            }).catch(err => {
-                console.log(err.message);
-            })
 
         }
         var pageEffect =
@@ -80,8 +92,9 @@ class Home extends React.Component {
                 <Input onChange={onChange} value={this.state.phonenumber} name="phonenumber" style={{ marginBottom: "10px" }} bsSize="sm" placeholder="PHONE NUMBER" type="number" min={0} />
                 <Input onChange={onChange} value={this.state.address} name="address" style={{ marginBottom: "10px" }} bsSize="sm" placeholder="ADDRESS" type="textarea" rows={3} />
                 <Input onChange={onChange} value={this.state.password} name="password" style={{ marginBottom: "10px" }} bsSize="sm" placeholder="PASSWORD" type="password" />
-                <Input onChange={onChange} value={this.state.confirmpassword} name="confirmpassword" style={{ marginBottom: "30px" }} bsSize="sm" placeholder="CONFIRM PASSWORD" type="password" />
-                <Button onClick={onSignupSubmit} style={{ backgroundColor: "var(--light-blue-color)", border: "none", color: "var(--blue-color)", fontWeight: "700" }}>
+                <Input onChange={onChange} value={this.state.confirmpassword} name="confirmpassword" bsSize="sm" placeholder="CONFIRM PASSWORD" type="password" />
+                <div style={{ color: "red", textAlign: "center", marginBottom: "10px" }}>{this.state.error}</div>
+                <Button disabled={disabledSignup} onClick={onSignupSubmit} style={{ backgroundColor: "var(--light-blue-color)", border: "none", color: "var(--blue-color)", fontWeight: "700" }}>
                     REGISTER
                 </Button>
             </ToastBody>
@@ -96,7 +109,8 @@ class Home extends React.Component {
                     </div>
                     <Input onChange={onChange} value={this.state.username} name="username" style={{ marginBottom: "10px" }} bsSize="sm" placeholder="USERNAME" type="text" />
                     <Input onChange={onChange} value={this.state.password} name="password" style={{ marginBottom: "10px" }} bsSize="sm" placeholder="PASSWORD" type="password" />
-                    <Button onClick={onLoginSubmit} style={{ backgroundColor: "var(--light-blue-color)", border: "none", color: "var(--blue-color)", fontWeight: "700" }}>
+                    <div style={{ color: "red", textAlign: "center" }}>{this.state.error}</div>
+                    <Button disabled={disabledLogin} onClick={onLoginSubmit} style={{ backgroundColor: "var(--light-blue-color)", border: "none", color: "var(--blue-color)", fontWeight: "700" }}>
                         LOGIN
                     </Button>
                 </ToastBody>
@@ -114,8 +128,12 @@ class Home extends React.Component {
                         {/* {JSON.parse(localStorage.getItem("userDetails")) ?
                             <div style={{ height: "0px" }}></div> : <div>{pageEffect}</div>} */}
                         {pageEffect}
+
                     </Toast>
                 </div>
+                {this.state.alert ? <Alert style={{ position: "absolute" }} color="success" dismissible>
+                    You have been successfully logged in !!
+                </Alert> : null}
             </div>
         )
     }
